@@ -39,6 +39,7 @@ struct Character {
 
 // Function declarations
 Character CreateCharacter();
+int GetChoice();
 
 void Play(Character&);
 
@@ -62,7 +63,7 @@ int main()
 
     // Game loop
 
-    cout << "Welcome to the RPG\n";
+    cout << "\tWelcome to the RPG\n";
     cout << R"(
          ____  ____   ____
         |  _ \|  _ \ / ___|
@@ -71,29 +72,41 @@ int main()
         |_| \_\_|    \____|
         )" << endl << endl;
 
-    cout << "Choose your option" << endl;
-        cout << "1. New Game" << endl;
-        cout << "2. Load Game" << endl;
-        cout << "3. Quit Game" << endl;
-        cout << ":";
-
-        cin >> choice;
-
     while (running) {
+
+        int choice = 0;
+
+        do {
+            cout << "Choose your option" << endl;
+            cout << "1. New Game" << endl;
+            cout << "2. Load Game" << endl;
+            cout << "3. Quit Game" << endl;
+            cout << "\n:";
+
+            cin >> choice;
+
+            if (!cin >> choice || choice < 1 || choice > 3) {
+                cout << "Error. Please enter option 1, 2, or 3." << endl;
+                cin.clear();
+                cin.ignore(1024,'\n');
+            }
+        } while(!cin >> choice || choice < 1 || choice > 3);
 
         switch (choice) {
             case 1: {
-                cout << "Welcome, player..." << endl;
+                cout << "\tWelcome, player..." << endl;
                 playerCharacter = CreateCharacter();
+                Play(playerCharacter);
                 break;
                 }
            case 2: {
-                cout << "Welcome back..." << endl;
+                cout << "\tWelcome back..." << endl;
+                // Load playerCharacter data
                 Play(playerCharacter);
                 break;
                 }
             case 3: {
-                cout << "Thanks for playing!" << endl;
+                cout << "\tThanks for playing!" << endl;
                 running = false;
                 break;
                 }
@@ -103,26 +116,35 @@ int main()
     return 0;
 }
 
+// Function definitions
+
 Character CreateCharacter() {
 
+    // Variables
+    string yes_no;
     Character playerCharacter;
 
+    // Clear stream buffer
+    cin.clear();
+    cin.ignore(1024,'\n');
+
     cout << "\tWhat is your name, adventurer?" << endl;
+    getline(cin, playerCharacter.name);
 
-    while (!(cin >> playerCharacter.name)) {
-        getline(cin, playerCharacter.name);
-    }
+    do {
+        cout << "\n\t" << playerCharacter.name << endl << endl;
+        cout << "\tConfirm name... (yes or no)" << endl << endl;
+        getline(cin, yes_no);
 
-    cout << "\tWell met " << playerCharacter.name << endl << endl;
-    cout << "\tWelcome to the" << endl;
+        if (yes_no == "no" || yes_no == "n") {
+            cout << "\tWhat is your name, adventurer?" << endl;
+            getline(cin, playerCharacter.name);
+            }
 
-    cout << R"(
-     ____  ____   ____
-    |  _ \|  _ \ / ___|
-    | |_) | |_) | |  _
-    |  _ <|  __/| |_| |
-    |_| \_\_|    \____|
-    )" << endl << endl;
+    } while (yes_no != "yes" || yes_no != "y");
+
+    cout << "\tWell met " << playerCharacter.name << endl;
+    cout << "\tWelcome to the world of Arpegee." << endl << endl;
 
 
     return playerCharacter;
@@ -137,9 +159,9 @@ void Play(Character& playerCharacter) {
     string yes_no;
 
     while (running) {
-        // Start new
+    // Start new
     if (playerCharacter.save_place == "") {
-        cout << "You begin your adventure in your hometown of ";
+        cout << "\tYou begin your adventure in your hometown of ";
         cout << HOMETOWN << endl << endl;
         playerCharacter.save_place = HOMETOWN;
     // Start in Hometown
@@ -156,37 +178,38 @@ void Play(Character& playerCharacter) {
         cout << "\tYou wake up in a darkened room..." << endl << endl;
     }
 
-        while (running) {
-            cout << "\tWhat would you like to do next?" << endl;
-            cout << "1. Shop" << endl ;
-            cout << "2. Explore" << endl;
-            cout << "3. Save and Quit" << endl << endl;
+    choice = GetChoice();
 
-            while (!(cin >> choice)) {
-                    cin >> choice;
-                }
-            switch (choice) {
-                case 1:
+    switch (choice) {
+        case 1: {
 
-                cout << "\tYou enter the shop..." << endl << endl;
+            cout << "\tYou enter the shop..." << endl << endl;
 
-                break;
+            break;
 
-                case 2:
+            }
 
-                cout << "\tYou leave town..." << endl << endl;
 
-                break;
+        case 2: {
 
-                case 3:
+            cout << "\tYou leave town..." << endl << endl;
 
-                cout << "\tAre you sure?" << endl << endl;
+            break;
 
-                while (!(cin >> yes_no)) {
-                    getline(cin, yes_no);
-                }
+            }
 
-                break;
+
+        case 3: {
+
+            cout << "\tAre you sure? (yes or no)" << endl << endl;
+            cin.clear();
+            cin.ignore(1024,'\n');
+            getline(cin, yes_no);
+
+            if (yes_no == "yes" || yes_no == "y") {
+                    running = false;
+                    break;
+                    }
             }
         }
     }
@@ -203,4 +226,27 @@ void Play(Character& playerCharacter) {
     if (playerCharacter.save_place == PURPLETOWN) {
 
     }
+}
+
+int GetChoice() {
+
+    int choice = 0;
+
+    do {
+        cout << "Choose your option" << endl;
+        cout << "1. Shop" << endl;
+        cout << "2. Explore" << endl;
+        cout << "3. Quit to menu" << endl;
+        cout << "\n:";
+
+        cin >> choice;
+
+        if (!cin >> choice || choice < 1 || choice > 3) {
+            cout << "Error. Please enter option 1, 2, or 3." << endl;
+            cin.clear();
+            cin.ignore(1024,'\n');
+        }
+    } while(!cin >> choice || choice < 1 || choice > 3);
+
+    return choice;
 }

@@ -4,18 +4,7 @@
 using namespace std;
 
 // Constants
-
-int
-    NAME_IDX = 0,
-    LVL_IDX = 1,
-    EXP_IDX = 2,
-    HEAD_IDX = 3,
-    BODY_IDX = 4,
-    WEAP_IDX = 5,
-    SAVE_IDX = 6,
-    PLAYER_SIZE = 7;
-
-string
+const string
     // Towns
     HOMETOWN = "Hometown",
     GREENTOWN = "Greentown",
@@ -35,12 +24,23 @@ string
     LONG_SWORD = "long_sword",
     EXCALIBUR = "Excalibur";
 
+// Structures
+struct Character {
 
+    string
+        name,       // Character name, input by player
+        lvl,        // Character level, tracked by exp
+        exp,        // Character experience, gained from killing monsters
+        head,       // Character head gear, bought from store, found on monsters
+        body,       // Character body gear, bought from store, found on monsters
+        weapon,     // Character weapon, bought from store, found on monsters
+        save_place; // Town location where player saves
+};
 
 // Function declarations
-string CreatePlayer();
+Character CreateCharacter();
 
-void Play(string[]);
+void Play(Character&);
 
 int main()
 {
@@ -48,6 +48,8 @@ int main()
     ifstream load;   // ifstream object to load player data
     ofstream player_file; // ofstream object to write all player data, populated with
                      // option 1. New Game
+
+    Character playerCharacter;  // Player character struct
 
     load.open("player_data.txt");
     player_file.open("player_data.txt");
@@ -57,16 +59,6 @@ int main()
 
     int
         choice;      // menu choice, input by the player
-
-    string
-        name,       // Character name, input by player
-        lvl,        // Character level, tracked by exp
-        exp,        // Character experience, gained from killing monsters
-        head,       // Character head gear, bought from store, found on monsters
-        body,       // Character body gear, bought from store, found on monsters
-        weapon,     // Character weapon, bought from store, found on monsters
-        save_place, // Town location where player saves
-        player[PLAYER_SIZE] = {name, lvl, exp, head, body, weapon, save_place};
 
     // Game loop
 
@@ -90,65 +82,53 @@ int main()
     while (running) {
 
         switch (choice) {
-            case 1:
+            case 1: {
                 cout << "Welcome, player..." << endl;
-
+                playerCharacter = CreateCharacter();
                 break;
-           case 2:
+                }
+           case 2: {
                 cout << "Welcome back..." << endl;
-                Play(player);
+                Play(playerCharacter);
                 break;
-            case 3:
+                }
+            case 3: {
                 cout << "Thanks for playing!" << endl;
                 running = false;
                 break;
+                }
         }
     }
 
     return 0;
 }
 
-string CreatePlayer() {
+Character CreateCharacter() {
 
-    const int character_array_size = 7;
+    Character playerCharacter;
 
-    string
-        name,       // Character name, input by player
-        lvl,        // Character level, tracked by exp
-        exp,        // Character experience, gained from killing monsters
-        head,       // Character head gear, bought from store, found on monsters
-        body,       // Character body gear, bought from store, found on monsters
-        weapon,     // Character weapon, bought from store, found on monsters
-        save_place, // Town location where player saves
-        player[PLAYER_SIZE] = {name, lvl, exp, head, body, weapon, save_place};
+    cout << "\tWhat is your name, adventurer?" << endl;
 
+    while (!(cin >> playerCharacter.name)) {
+        getline(cin, playerCharacter.name);
+    }
 
-        cout << "\tWhat is your name, adventurer?" << endl;
+    cout << "\tWell met " << playerCharacter.name << endl << endl;
+    cout << "\tWelcome to the" << endl;
 
-        while (!(cin >> name)) {
-            getline(cin, name);
-        }
-
-        // Assign values to player from consts, and player name input
-        player[0] = name;
-        player[7] = HOMETOWN;
-
-        cout << "\tWell met " << name << endl << endl;
-        cout << "\tWelcome to the" << endl;
-
-        cout << R"(
-         ____  ____   ____
-        |  _ \|  _ \ / ___|
-        | |_) | |_) | |  _
-        |  _ <|  __/| |_| |
-        |_| \_\_|    \____|
-        )" << endl << endl;
+    cout << R"(
+     ____  ____   ____
+    |  _ \|  _ \ / ___|
+    | |_) | |_) | |  _
+    |  _ <|  __/| |_| |
+    |_| \_\_|    \____|
+    )" << endl << endl;
 
 
-        return player[character_array_size];
+    return playerCharacter;
 }
 
-void Play(string player[]) {
+void Play(Character& playerCharacter) {
 
     bool running = true;
 
@@ -158,20 +138,21 @@ void Play(string player[]) {
 
     while (running) {
         // Start new
-    if (player[SAVE_IDX] == "") {
+    if (playerCharacter.save_place == "") {
         cout << "You begin your adventure in your hometown of ";
         cout << HOMETOWN << endl << endl;
+        playerCharacter.save_place = HOMETOWN;
     // Start in Hometown
-    } else if (player[SAVE_IDX] == HOMETOWN) {
+    } else if (playerCharacter.save_place == HOMETOWN) {
         cout << "\tYou wake up in your bed..." << endl << endl;
     // Start in Greentown
-    } else if (player[SAVE_IDX] == GREENTOWN) {
+    } else if (playerCharacter.save_place == GREENTOWN) {
         cout << "\tYou wake up in an earthen room..." << endl << endl;
     // Start in Bluetown
-    } else if (player[SAVE_IDX] == BLUETOWN) {
+    } else if (playerCharacter.save_place == BLUETOWN) {
         cout << "\tYou wake up in an oceanside room..." << endl << endl;
     // Start in Purpletown
-    } else if (player[SAVE_IDX] == PURPLETOWN) {
+    } else if (playerCharacter.save_place == PURPLETOWN) {
         cout << "\tYou wake up in a darkened room..." << endl << endl;
     }
 
@@ -211,15 +192,15 @@ void Play(string player[]) {
     }
 
 
-    if (player[SAVE_IDX] == GREENTOWN) {
+    if (playerCharacter.save_place == GREENTOWN) {
 
     }
 
-    if (player[SAVE_IDX] == BLUETOWN) {
+    if (playerCharacter.save_place == BLUETOWN) {
 
     }
 
-    if (player[SAVE_IDX] == PURPLETOWN) {
+    if (playerCharacter.save_place == PURPLETOWN) {
 
     }
 }

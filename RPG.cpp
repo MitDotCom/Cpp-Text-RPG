@@ -141,7 +141,7 @@ Character CreateCharacter() {
             getline(cin, playerCharacter.name);
             }
 
-    } while (yes_no != "yes" || yes_no != "y");
+    } while (yes_no != "yes" && yes_no != "y");
 
     cout << "\tWell met " << playerCharacter.name << endl;
     cout << "\tWelcome to the world of Arpegee." << endl << endl;

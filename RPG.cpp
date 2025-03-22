@@ -31,7 +31,8 @@ const int
     MAIN = 1,
     TOWN = 2,
     SHOP = 3,
-    FIGHT = 4;
+    EXPLORE = 4,
+    TRAVEL = 5;
 
 // Structures
 struct Character {
@@ -54,6 +55,8 @@ Character CreateCharacter();
 int GetChoice(const int);
 void Play(Character&);
 void Shop(Character&);
+void Explore(Character&);
+void Travel(Character&);
 
 int main()
 {
@@ -177,26 +180,24 @@ void Play(Character& playerCharacter) {
     choice = GetChoice(TOWN);
 
     switch (choice) {
+
         case 1: {
-
             cout << "\tYou enter the shop..." << endl << endl;
-
             Shop(playerCharacter);
-
             break;
         }
-
         case 2: {
-
             cout << "\tYou leave town..." << endl << endl;
-
-            Shop(playerCharacter);
-
+            Explore(playerCharacter);
             break;
         }
-
-
         case 3: {
+            cout << "\tWhere do you want to go?" << endl;
+            // Load playerCharacter data
+            Travel(playerCharacter);
+            break;
+        }
+        case 4: {
 
             cout << "\tAre you sure? (yes or no)" << endl << endl;
             cin.clear();
@@ -240,17 +241,18 @@ int GetChoice(const int choiceOption) {
             cout << "Choose your option" << endl;
             cout << "1. Shop" << endl;
             cout << "2. Explore" << endl;
+            cout << "3. Travel" << endl;
             cout << "3. Quit to menu" << endl;
             cout << "\n:";
 
             cin >> choice;
 
-            if (!cin >> choice || choice < 1 || choice > 3) {
-                cout << "Error. Please enter option 1, 2, or 3." << endl;
+            if (!cin >> choice || choice < 1 || choice > 4) {
+                cout << "Error. Please enter option 1, 2, 3, or 4." << endl;
                 cin.clear();
                 cin.ignore(1024,'\n');
         }
-    } while(!cin >> choice || choice < 1 || choice > 3);
+    } while(!cin >> choice || choice < 1 || choice > 4);
 
     } else if (choiceOption == SHOP) {
 
@@ -266,12 +268,11 @@ int GetChoice(const int choiceOption) {
             }
         } while(!cin >> choice || choice < 1 || choice > 3);
 
-    } else if (choiceOption == FIGHT) {
+    } else if (choiceOption == EXPLORE) {
 
         do {
             cout << "Choose your option" << endl;
-            cout << "1. Shop" << endl;
-            cout << "2. Explore" << endl;
+
             cout << "3. Quit to menu" << endl;
             cout << "\n:";
 
@@ -300,6 +301,7 @@ void Shop(Character& playerCharacter) {
         cout << "1. light helmet - 10 gold" << endl;
         cout << "2. gambeson - 15 gold" << endl;
         cout << "3. dagger - 5 gold" << endl;
+        cout << "4. Nothing" << endl;
         choice = GetChoice(SHOP);
 
         if (choice == 1) {
@@ -311,10 +313,25 @@ void Shop(Character& playerCharacter) {
                 playerCharacter.gold -= 10;
             }
         } else if (choice == 2) {
-
+            if (playerCharacter.gold < 15) {
+                cout << "  \"You do not have enough gold...\"" << endl;
+            } else {
+                cout << "  \"Ahh. A sturdy piece that one...hehe\"" << endl;
+                playerCharacter.head = LIGHTHELM;
+                playerCharacter.gold -= 10;
+            }
         } else if (choice == 3) {
-
+            if (playerCharacter.gold < 5) {
+                cout << "  \"You do not have enough gold...\"" << endl;
+            } else {
+                cout << "  \"A mere butter knife...but sharp!...hehe\"" << endl;
+                playerCharacter.head = LIGHTHELM;
+                playerCharacter.gold -= 10;
+            }
+        } else if (choice == 4) {
+            cout << "  \"Take care of yourself now...\"" << endl;
         }
+
     } else if (playerCharacter.save_place == BLUETOWN) {
         cout << "\tA portly woman greets you." << endl << endl;
         cout << "  \"What would you like to buy?\"" << endl;
@@ -324,6 +341,7 @@ void Shop(Character& playerCharacter) {
         cout << "2. cuirass - 50 gold" << endl;
         cout << "3. sword - 60 gold" << endl;
         choice = GetChoice(SHOP);
+
     } else if (playerCharacter.save_place == PURPLETOWN) {
         cout << "\tA sophisticated merchant greets you." << endl << endl;
         cout << "  \"What would you like to buy?\"" << endl;
@@ -335,3 +353,14 @@ void Shop(Character& playerCharacter) {
         choice = GetChoice(SHOP);
     }
 }
+
+void Explore(Character&) {
+
+    int choice = 0;
+
+//    choice = GetChoice();
+}
+
+void Travel (Character&) {
+
+    }

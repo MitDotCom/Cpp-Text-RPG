@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <random>
+
 using namespace std;
 
 // Constants
@@ -38,16 +40,19 @@ const int
 struct Character {
 
     string
-        name,       // Character name, input by player
-        save_place; // Town location where player saves
+        name,           // Character name, input by player
+        save_place,     // Town location where player saves
+        head_name,      // Character head gear name, bought from store, found on monsters
+        body_name,      // Character body gear name, bought from store, found on monsters
+        weapon_name;    // Character weapon name, bought from store, found on monsters
 
     int
-        lvl = 1,    // Character level, tracked by exp
-        exp = 0,    // Character experience, gained from killing monsters
-        gold = 0,   // Character gold, gained from killing monsters
-        head = 0,   // Character head gear, bought from store, found on monsters
-        body = 0,   // Character body gear, bought from store, found on monsters
-        weapon = 0; // Character weapon, bought from store, found on monsters
+        lvl = 1,        // Character level, tracked by exp
+        exp = 0,        // Character experience, gained from killing monsters
+        gold = 0,       // Character gold, gained from killing monsters
+        head_value = 0,   // Character head gear value, bought from store, found on monsters
+        body_value = 0,   // Character body gear value, bought from store, found on monsters
+        weapon_value = 0; // Character weapon value, bought from store, found on monsters
 };
 
 // Function declarations
@@ -61,6 +66,9 @@ void Travel(Character&);
 int main()
 {
     // Variables
+
+    mt19937 generator(time(0));
+
     Character playerCharacter;  // Player character struct
 
     bool
@@ -71,7 +79,7 @@ int main()
 
     // Game loop
 
-    cout << "\tWelcome to the RPG\n";
+    cout << "\t   Welcome to the\n";
     cout << R"(
          ____  ____   ____
         |  _ \|  _ \ / ___|
@@ -142,10 +150,30 @@ Character CreateCharacter() {
     cout << "\tWell met " << playerCharacter.name << endl;
     cout << "\tWelcome to the world of Arpegee." << endl << endl;
 
-    save_player << playerCharacter.name << endl;
+    playerCharacter.save_place = "none";
+    playerCharacter.lvl = 1;
+    playerCharacter.exp = 0;
+    playerCharacter.gold = 0;
+    playerCharacter.head_name = "none";
+    playerCharacter.head_value = 0;
+    playerCharacter.body_name = "none";
+    playerCharacter.body_value = 0;
+    playerCharacter.weapon_name = "none";
+    playerCharacter.weapon_value = 0;
 
-    playerCharacter.save_place = HOMETOWN;
+    save_player << playerCharacter.name << endl;
     save_player << playerCharacter.save_place << endl;
+    save_player << playerCharacter.lvl << endl;
+    save_player << playerCharacter.exp << endl;
+    save_player << playerCharacter.gold << endl;
+    save_player << playerCharacter.head_name << endl;
+    save_player << playerCharacter.head_value << endl;
+    save_player << playerCharacter.body_name << endl;
+    save_player << playerCharacter.body_value << endl;
+    save_player << playerCharacter.weapon_name << endl;
+    save_player << playerCharacter.body_value << endl;
+
+    cout << "---------------------------------------------------------------------------" << endl;
 
     return playerCharacter;
 }
@@ -162,12 +190,20 @@ void Play(Character& playerCharacter) {
     load_player.open("player_data.txt");
 
     load_player >> playerCharacter.name;
+    load_player >> playerCharacter.save_place;
+    load_player >> playerCharacter.lvl;
+    load_player >> playerCharacter.exp;
+    load_player >> playerCharacter.gold;
+    load_player >> playerCharacter.head_name;
+    load_player >> playerCharacter.head_value;
+    load_player >> playerCharacter.body_name;
+    load_player >> playerCharacter.body_value;
+    load_player >> playerCharacter.weapon_name;
+    load_player >> playerCharacter.weapon_value;
 
     cout << "\tWelcome back " << playerCharacter.name << "." << endl << endl;
 
-    while (running) {
-    // Start new
-    if (playerCharacter.save_place == "") {
+    if (playerCharacter.save_place == "none") {
         cout << "\tYou begin your adventure in your hometown of ";
         cout << HOMETOWN << endl << endl;
         playerCharacter.save_place = HOMETOWN;
@@ -185,28 +221,26 @@ void Play(Character& playerCharacter) {
         cout << "\tYou wake up in a darkened room..." << endl << endl;
     }
 
+    while (running) {
+    // Start new
+
     choice = GetChoice(TOWN);
 
     switch (choice) {
 
         case 1: {
-            cout << "\tYou enter the shop..." << endl << endl;
             Shop(playerCharacter);
             break;
         }
         case 2: {
-            cout << "\tYou leave town..." << endl << endl;
             Explore(playerCharacter);
             break;
         }
         case 3: {
-            cout << "\tWhere do you want to go?" << endl;
-            // Load playerCharacter data
             Travel(playerCharacter);
             break;
         }
         case 4: {
-
             cout << "\tAre you sure? (yes or no)" << endl << endl;
             cin.clear();
             cin.ignore(1024,'\n');
@@ -231,7 +265,7 @@ int GetChoice(const int choiceOption) {
             cout << "Choose your option" << endl;
             cout << "1. New Game" << endl;
             cout << "2. Load Game" << endl;
-            cout << "3. Quit Game" << endl;
+            cout << "3. Save and Quit Game" << endl;
             cout << "\n:";
 
             cin >> choice;
@@ -269,19 +303,20 @@ int GetChoice(const int choiceOption) {
 
             cin >> choice;
 
-            if (!cin >> choice || choice < 1 || choice > 3) {
-                cout << "Error. Please enter option 1, 2, or 3." << endl;
+            if (!cin >> choice || choice < 1 || choice > 4) {
+                cout << "Error. Please enter option 1, 2, or 4." << endl;
                 cin.clear();
                 cin.ignore(1024,'\n');
             }
-        } while(!cin >> choice || choice < 1 || choice > 3);
+        } while(!cin >> choice || choice < 1 || choice > 4);
 
     } else if (choiceOption == EXPLORE) {
 
         do {
             cout << "Choose your option" << endl;
-
-            cout << "4. Quit to menu" << endl;
+            cout << "1. Wilderness" << endl;
+            cout << "2. Travel to another town" << endl;
+            cout << "3. Quit to menu" << endl;
             cout << "\n:";
 
             cin >> choice;
@@ -292,14 +327,36 @@ int GetChoice(const int choiceOption) {
                 cin.ignore(1024,'\n');
             }
         } while(!cin >> choice || choice < 1 || choice > 3);
+
+    } else if (choiceOption == TRAVEL) {
+
+        do {
+            cout << "Choose your option" << endl;
+            cout << "1. Hometown" << endl;
+            cout << "2. Bluetown" << endl;
+            cout << "3. Purpletown" << endl;
+            cout << "\n:";
+
+            cin >> choice;
+
+            if (!cin >> choice || choice < 1 || choice > 3) {
+                cout << "Error. Please enter option 1, 2, or 3." << endl;
+                cin.clear();
+                cin.ignore(1024,'\n');
+            }
+        } while(!cin >> choice || choice < 1 || choice > 3);
+
     }
 
+    cout << "---------------------------------------------------------------------------" << endl;
     return choice;
 }
 
 void Shop(Character& playerCharacter) {
 
     int choice = 0;
+
+    cout << "\tYou enter the shop..." << endl << endl;
 
     if (playerCharacter.save_place == HOMETOWN) {
         cout << "\tA feeble old man greets you." << endl << endl;
@@ -317,24 +374,28 @@ void Shop(Character& playerCharacter) {
                 cout << "  \"You do not have enough gold...\"" << endl;
             } else {
                 cout << "  \"It's not much. But it'll keep yer head on...hehe\"" << endl;
-                playerCharacter.head = LIGHTHELM;
-                playerCharacter.gold -= 10;
+                playerCharacter.head_name = "light helmet";
+                playerCharacter.head_value = LIGHTHELM;
+                playerCharacter.gold -= LIGHTHELM;
             }
         } else if (choice == 2) {
             if (playerCharacter.gold < 15) {
                 cout << "  \"You do not have enough gold...\"" << endl;
             } else {
                 cout << "  \"Ahh. A sturdy piece that one...hehe\"" << endl;
-                playerCharacter.head = LIGHTHELM;
-                playerCharacter.gold -= 10;
+                playerCharacter.body_name = "gambeson";
+                playerCharacter.body_value = GAMBESON;
+                playerCharacter.gold -= GAMBESON;
             }
         } else if (choice == 3) {
             if (playerCharacter.gold < 5) {
                 cout << "  \"You do not have enough gold...\"" << endl;
+                choice = GetChoice(SHOP);
             } else {
                 cout << "  \"A mere butter knife...but sharp!...hehe\"" << endl;
-                playerCharacter.head = LIGHTHELM;
-                playerCharacter.gold -= 10;
+                playerCharacter.weapon_name = "dagger";
+                playerCharacter.weapon_value = DAGGER;
+                playerCharacter.gold -= DAGGER;
             }
         } else if (choice == 4) {
             cout << "  \"Take care of yourself now...\"" << endl;
@@ -362,13 +423,26 @@ void Shop(Character& playerCharacter) {
     }
 }
 
-void Explore(Character&) {
+void Explore(Character& playerCharacter) {
 
     int choice = 0;
 
-//    choice = GetChoice();
+    cout << "\tYou leave town..." << endl << endl;
+
+    if (playerCharacter.save_place == HOMETOWN) {
+
+        choice = GetChoice(EXPLORE);
+
+    } else if (playerCharacter.save_place == BLUETOWN) {
+
+
+    } else if (playerCharacter.save_place == PURPLETOWN) {
+
+
+    }
 }
 
-void Travel (Character&) {
+void Travel(Character&) {
 
+    cout << "\tWhere do you want to go?" << endl;
     }

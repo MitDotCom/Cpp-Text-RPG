@@ -61,14 +61,7 @@ void Travel(Character&);
 int main()
 {
     // Variables
-    ifstream load;   // ifstream object to load player data
-    ofstream player_file; // ofstream object to write all player data, populated with
-                     // option 1. New Game
-
     Character playerCharacter;  // Player character struct
-
-    load.open("player_data.txt");
-    player_file.open("player_data.txt");
 
     bool
         running = true; // running variable for game loop, programmed
@@ -93,13 +86,11 @@ int main()
 
         switch (choice) {
             case 1: {
-                cout << "\tWelcome, player..." << endl;
                 playerCharacter = CreateCharacter();
                 Play(playerCharacter);
                 break;
                 }
            case 2: {
-                cout << "\tWelcome back..." << endl;
                 // Load playerCharacter data
                 Play(playerCharacter);
                 break;
@@ -123,9 +114,15 @@ Character CreateCharacter() {
     string yes_no;
     Character playerCharacter;
 
+    ofstream save_player;   // ofstream object to write all player data, populated with
+                            // option 1. New Game
+    save_player.open("player_data.txt");
+
     // Clear stream buffer
     cin.clear();
     cin.ignore(1024,'\n');
+
+    cout << "\tWelcome, player..." << endl;
 
     cout << "\tWhat is your name, adventurer?" << endl;
     getline(cin, playerCharacter.name);
@@ -145,6 +142,10 @@ Character CreateCharacter() {
     cout << "\tWell met " << playerCharacter.name << endl;
     cout << "\tWelcome to the world of Arpegee." << endl << endl;
 
+    save_player << playerCharacter.name << endl;
+
+    playerCharacter.save_place = HOMETOWN;
+    save_player << playerCharacter.save_place << endl;
 
     return playerCharacter;
 }
@@ -156,6 +157,13 @@ void Play(Character& playerCharacter) {
     int choice = 0;
 
     string yes_no;
+
+    ifstream load_player;   // ifstream object to load player data
+    load_player.open("player_data.txt");
+
+    load_player >> playerCharacter.name;
+
+    cout << "\tWelcome back " << playerCharacter.name << "." << endl << endl;
 
     while (running) {
     // Start new
@@ -242,7 +250,7 @@ int GetChoice(const int choiceOption) {
             cout << "1. Shop" << endl;
             cout << "2. Explore" << endl;
             cout << "3. Travel" << endl;
-            cout << "3. Quit to menu" << endl;
+            cout << "4. Quit to menu" << endl;
             cout << "\n:";
 
             cin >> choice;
@@ -273,7 +281,7 @@ int GetChoice(const int choiceOption) {
         do {
             cout << "Choose your option" << endl;
 
-            cout << "3. Quit to menu" << endl;
+            cout << "4. Quit to menu" << endl;
             cout << "\n:";
 
             cin >> choice;

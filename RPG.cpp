@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <random>
+#include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -66,8 +68,6 @@ void Travel(Character&);
 int main()
 {
     // Variables
-
-    mt19937 generator(time(0));
 
     Character playerCharacter;  // Player character struct
 
@@ -390,7 +390,6 @@ void Shop(Character& playerCharacter) {
         } else if (choice == 3) {
             if (playerCharacter.gold < 5) {
                 cout << "  \"You do not have enough gold...\"" << endl;
-                choice = GetChoice(SHOP);
             } else {
                 cout << "  \"A mere butter knife...but sharp!...hehe\"" << endl;
                 playerCharacter.weapon_name = "dagger";
@@ -426,6 +425,7 @@ void Shop(Character& playerCharacter) {
 void Explore(Character& playerCharacter) {
 
     int choice = 0;
+    int fightOrFind = 0;
 
     cout << "\tYou leave town..." << endl << endl;
 
@@ -433,16 +433,122 @@ void Explore(Character& playerCharacter) {
 
         choice = GetChoice(EXPLORE);
 
+        if (choice == 1) {
+
+            fightOrFind = rand() % 15;
+
+            if (fightOrFind == 15) {
+                cout << "You found an artifact!" << endl;
+            } else if (fightOrFind < 5) {
+                cout << "You encounter a stag." << endl;
+            } else if (fightOrFind > 5 && fightOrFind < 10) {
+                cout << "You find a scorpion." << endl;
+            } else if (fightOrFind > 10 && fightOrFind < 15) {
+                cout << "You find a werebeast." << endl;
+            }
+        } else if (choice == 2) {
+
+            cout << "Where would you like to travel to?" << endl;
+            choice = GetChoice(TRAVEL);
+
+            if (choice == 1) {
+
+                cout << "You travel to Hometown" << endl;
+                playerCharacter.save_place == HOMETOWN;
+            } else if (choice == 2) {
+
+                cout << "You travel to Bluetown" << endl;
+                playerCharacter.save_place == BLUETOWN;
+            } else if (choice == 3) {
+
+                cout << "You travel to Purpletown" << endl;
+                playerCharacter.save_place == PURPLETOWN;
+            }
+        }
+
     } else if (playerCharacter.save_place == BLUETOWN) {
 
+        choice = GetChoice(EXPLORE);
+
+        if (choice == 1) {
+
+            fightOrFind = rand() % 15;
+
+            if (fightOrFind == 15) {
+                cout << "You found an artifact!" << endl;
+            } else if (fightOrFind < 5) {
+                cout << "You encounter a tortoise." << endl;
+            } else if (fightOrFind > 5 && fightOrFind < 10) {
+                cout << "You find a boa." << endl;
+            } else if (fightOrFind > 10 && fightOrFind < 15) {
+                cout << "You find a grizzly." << endl;
+            }
+        } else if (choice == 2) {
+
+            cout << "Where would you like to travel to?" << endl;
+            choice = GetChoice(TRAVEL);
+
+            if (choice == 1) {
+
+                cout << "You travel to Homestown" << endl;
+                playerCharacter.save_place == HOMETOWN;
+            } else if (choice == 2) {
+
+                cout << "You travel to Bluetown" << endl;
+                playerCharacter.save_place == BLUETOWN;
+            } else if (choice == 3) {
+
+                cout << "You travel to Purpletown" << endl;
+                playerCharacter.save_place == PURPLETOWN;
+            }
+        }
 
     } else if (playerCharacter.save_place == PURPLETOWN) {
 
+        choice = GetChoice(EXPLORE);
 
+        if (choice == 1) {
+
+            fightOrFind = rand() % 15;
+
+            if (fightOrFind == 15) {
+                cout << "You found an artifact!" << endl;
+            } else if (fightOrFind < 5) {
+                cout << "You encounter a jaguar." << endl;
+            } else if (fightOrFind > 5 && fightOrFind < 10) {
+                cout << "You find a wildebeast." << endl;
+            } else if (fightOrFind > 10 && fightOrFind < 15) {
+                cout << "You find a rhinocerous." << endl;
+            }
+
+        } else if (choice == 2) {
+
+            cout << "Where would you like to travel to?" << endl;
+            choice = GetChoice(TRAVEL);
+
+
+        }
     }
 }
 
-void Travel(Character&) {
+void Travel(Character& playerCharacter) {
+
+    int choice = 0;
 
     cout << "\tWhere do you want to go?" << endl;
+    choice = GetChoice(TRAVEL);
+
+    if (choice == 1) {
+
+            cout << "You travel to Hometown" << endl;
+            playerCharacter.save_place == HOMETOWN;
+        } else if (choice == 2) {
+
+            cout << "You travel to Bluetown" << endl;
+            playerCharacter.save_place == BLUETOWN;
+        } else if (choice == 3) {
+
+            cout << "You travel to Purpletown" << endl;
+            playerCharacter.save_place == PURPLETOWN;
+        }
     }

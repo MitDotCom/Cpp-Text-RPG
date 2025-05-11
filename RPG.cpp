@@ -49,6 +49,7 @@ struct Character {
         weapon_name;    // Character weapon name, bought from store, found on monsters
 
     int
+        hp = 10,             // Character heath, tracked by combat
         lvl = 1,        // Character level, tracked by exp
         exp = 0,        // Character experience, gained from killing monsters
         gold = 0,       // Character gold, gained from killing monsters
@@ -426,6 +427,19 @@ void Explore(Character& playerCharacter) {
 
     int choice = 0;
     int fightOrFind = 0;
+    int findArtifact = 0;
+    int swing = 0;
+    int enemyHealth = 0;
+    // Enemies
+    int stag = 4;
+    int scorpion = 5;
+    int werebeast = 6;
+    int tortoise = 6;
+    int boa = 7;
+    int grizzly = 8;
+    int jaguar = 10;
+    int wildebeast = 12;
+    int rhinoceros = 14;
 
     cout << "\tYou leave town..." << endl << endl;
 
@@ -439,12 +453,71 @@ void Explore(Character& playerCharacter) {
 
             if (fightOrFind == 15) {
                 cout << "You found an artifact!" << endl;
+                playerCharacter.gold += findArtifact;
+                cout << "It's worth" << findArtifact << "gold. Cool." << endl;
+
             } else if (fightOrFind < 5) {
                 cout << "You encounter a stag." << endl;
+                enemyHealth = stag;
+                swing = rand() % stag;
+                cout << "You hit for" << swing << "damage." << endl;
+                while (enemyHealth > 0) {
+                    swing = rand() % stag;
+                    playerCharacter.hp -= swing;
+                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    if (playerCharacter.hp < 1) {
+                        cout << "You died..." << endl;
+                        exit();                                     // CAREFUL
+                    }
+                    swing = rand() % playerCharacter.weapon_value;
+                    cout << "You hit for" << swing << "damage." << endl;
+                    enemyHealth -= swing;
+                    if (enemyHealth < 1) {
+                        cout << "Victory... You killed the stag." << endl;
+                    }
+                }
+
             } else if (fightOrFind > 5 && fightOrFind < 10) {
-                cout << "You find a scorpion." << endl;
+                cout << "You encounter a scorpion." << endl;
+                enemyHealth = scorpion;
+                swing = rand() % scorpion;
+                cout << "You hit for" << swing << "damage." << endl;
+                while (enemyHealth > 0) {
+                    swing = rand() % scorpion;
+                    playerCharacter.hp -= swing;
+                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    if (playerCharacter.hp < 1) {
+                        cout << "You died..." << endl;
+                        exit();                                     // CAREFUL
+                    }
+                    swing = rand() % playerCharacter.weapon_value;
+                    cout << "You hit for" << swing << "damage." << endl;
+                    enemyHealth -= swing;
+                    if (enemyHealth < 1) {
+                        cout << "Victory... You killed the scorpion." << endl;
+                    }
+                }
+
             } else if (fightOrFind > 10 && fightOrFind < 15) {
-                cout << "You find a werebeast." << endl;
+                cout << "You encounter a werebeast." << endl;
+                enemyHealth = werebeast;
+                swing = rand() % werebeast;
+                cout << "You hit for" << swing << "damage." << endl;
+                while (enemyHealth > 0) {
+                    swing = rand() % werebeast;
+                    playerCharacter.hp -= swing;
+                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    if (playerCharacter.hp < 1) {
+                        cout << "You died..." << endl;
+                        exit();                                     // CAREFUL
+                    }
+                    swing = rand() % playerCharacter.weapon_value;
+                    cout << "You hit for" << swing << "damage." << endl;
+                    enemyHealth -= swing;
+                    if (enemyHealth < 1) {
+                        cout << "Victory... You killed the werebeast." << endl;
+                    }
+                }
             }
         } else if (choice == 2) {
 
@@ -476,6 +549,8 @@ void Explore(Character& playerCharacter) {
 
             if (fightOrFind == 15) {
                 cout << "You found an artifact!" << endl;
+                playerCharacter.gold += findArtifact;
+                cout << "It's worth" << findArtifact << "gold. Cool." << endl;
             } else if (fightOrFind < 5) {
                 cout << "You encounter a tortoise." << endl;
             } else if (fightOrFind > 5 && fightOrFind < 10) {
@@ -513,6 +588,8 @@ void Explore(Character& playerCharacter) {
 
             if (fightOrFind == 15) {
                 cout << "You found an artifact!" << endl;
+                playerCharacter.gold += findArtifact;
+                cout << "It's worth" << findArtifact << "gold. Cool." << endl;
             } else if (fightOrFind < 5) {
                 cout << "You encounter a jaguar." << endl;
             } else if (fightOrFind > 5 && fightOrFind < 10) {

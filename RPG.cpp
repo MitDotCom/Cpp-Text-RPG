@@ -55,7 +55,7 @@ struct Character {
         gold = 0,       // Character gold, gained from killing monsters
         head_value = 0,   // Character head gear value, bought from store, found on monsters
         body_value = 0,   // Character body gear value, bought from store, found on monsters
-        weapon_value = 0; // Character weapon value, bought from store, found on monsters
+        weapon_value = 1; // Character weapon value, bought from store, found on monsters
 };
 
 // Function declarations
@@ -160,7 +160,7 @@ Character CreateCharacter() {
     playerCharacter.body_name = "none";
     playerCharacter.body_value = 0;
     playerCharacter.weapon_name = "none";
-    playerCharacter.weapon_value = 0;
+    playerCharacter.weapon_value = 1;
 
     save_player << playerCharacter.name << endl;
     save_player << playerCharacter.save_place << endl;
@@ -172,7 +172,7 @@ Character CreateCharacter() {
     save_player << playerCharacter.body_name << endl;
     save_player << playerCharacter.body_value << endl;
     save_player << playerCharacter.weapon_name << endl;
-    save_player << playerCharacter.body_value << endl;
+    save_player << playerCharacter.weapon_value << endl;
 
     cout << "---------------------------------------------------------------------------" << endl;
 
@@ -185,6 +185,7 @@ void Play(Character& playerCharacter) {
 
     int choice = 0;
 
+    // Verification (second attempt) check
     string yes_no;
 
     ifstream load_player;   // ifstream object to load player data
@@ -203,6 +204,8 @@ void Play(Character& playerCharacter) {
     load_player >> playerCharacter.weapon_value;
 
     cout << "\tWelcome back " << playerCharacter.name << "." << endl << endl;
+    cout << "Your level is " << playerCharacter.lvl << endl;
+    cout << "Your weapon level is " << playerCharacter.weapon_value << endl;
 
     if (playerCharacter.save_place == "none") {
         cout << "\tYou begin your adventure in your hometown of ";
@@ -425,6 +428,8 @@ void Shop(Character& playerCharacter) {
 
 void Explore(Character& playerCharacter) {
 
+    playerCharacter.weapon_value;
+
     int choice = 0;
     int fightOrFind = 0;
     int findArtifact = 0;
@@ -449,7 +454,7 @@ void Explore(Character& playerCharacter) {
 
         if (choice == 1) {
 
-            fightOrFind = rand() % 15;
+            fightOrFind = rand() % 15 + 1;
 
             if (fightOrFind == 15) {
                 cout << "You found an artifact!" << endl;
@@ -459,18 +464,18 @@ void Explore(Character& playerCharacter) {
             } else if (fightOrFind < 5) {
                 cout << "You encounter a stag." << endl;
                 enemyHealth = stag;
-                swing = rand() % stag;
-                cout << "You hit for" << swing << "damage." << endl;
+                swing = rand() % stag + 1;
+                cout << "You hit for " << swing << " damage." << endl;
                 while (enemyHealth > 0) {
-                    swing = rand() % stag;
+                    swing = rand() % stag + 1;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
                     if (playerCharacter.hp < 1) {
                         cout << "You died..." << endl;
-                        exit();                                     // CAREFUL
+                        exit(1);                                     // CAREFUL
                     }
-                    swing = rand() % playerCharacter.weapon_value;
-                    cout << "You hit for" << swing << "damage." << endl;
+                    swing = rand() % playerCharacter.weapon_value + 1;
+                    cout << "You hit for " << swing << " damage." << endl;
                     enemyHealth -= swing;
                     if (enemyHealth < 1) {
                         cout << "Victory... You killed the stag." << endl;
@@ -480,18 +485,18 @@ void Explore(Character& playerCharacter) {
             } else if (fightOrFind > 5 && fightOrFind < 10) {
                 cout << "You encounter a scorpion." << endl;
                 enemyHealth = scorpion;
-                swing = rand() % scorpion;
-                cout << "You hit for" << swing << "damage." << endl;
+                swing = rand() % scorpion + 1;
+                cout << "You hit for " << swing << " damage." << endl;
                 while (enemyHealth > 0) {
-                    swing = rand() % scorpion;
+                    swing = rand() % scorpion + 1;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
                     if (playerCharacter.hp < 1) {
                         cout << "You died..." << endl;
-                        exit();                                     // CAREFUL
+                        exit(1);                                     // CAREFUL
                     }
                     swing = rand() % playerCharacter.weapon_value;
-                    cout << "You hit for" << swing << "damage." << endl;
+                    cout << "You hit for " << swing << " damage." << endl;
                     enemyHealth -= swing;
                     if (enemyHealth < 1) {
                         cout << "Victory... You killed the scorpion." << endl;
@@ -501,18 +506,17 @@ void Explore(Character& playerCharacter) {
             } else if (fightOrFind > 10 && fightOrFind < 15) {
                 cout << "You encounter a werebeast." << endl;
                 enemyHealth = werebeast;
-                swing = rand() % werebeast;
-                cout << "You hit for" << swing << "damage." << endl;
                 while (enemyHealth > 0) {
-                    swing = rand() % werebeast;
+                    swing = rand() % werebeast + 1;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for" << swing << "damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
                     if (playerCharacter.hp < 1) {
                         cout << "You died..." << endl;
-                        exit();                                     // CAREFUL
+                        exit(1);                                     // CAREFUL
                     }
+                    cout << "Player weapon value: " << playerCharacter.weapon_value << endl;
                     swing = rand() % playerCharacter.weapon_value;
-                    cout << "You hit for" << swing << "damage." << endl;
+                    cout << "You hit for " << swing << " damage." << endl;
                     enemyHealth -= swing;
                     if (enemyHealth < 1) {
                         cout << "Victory... You killed the werebeast." << endl;
@@ -527,15 +531,15 @@ void Explore(Character& playerCharacter) {
             if (choice == 1) {
 
                 cout << "You travel to Hometown" << endl;
-                playerCharacter.save_place == HOMETOWN;
+                playerCharacter.save_place = HOMETOWN;
             } else if (choice == 2) {
 
                 cout << "You travel to Bluetown" << endl;
-                playerCharacter.save_place == BLUETOWN;
+                playerCharacter.save_place = BLUETOWN;
             } else if (choice == 3) {
 
                 cout << "You travel to Purpletown" << endl;
-                playerCharacter.save_place == PURPLETOWN;
+                playerCharacter.save_place = PURPLETOWN;
             }
         }
 
@@ -566,15 +570,15 @@ void Explore(Character& playerCharacter) {
             if (choice == 1) {
 
                 cout << "You travel to Homestown" << endl;
-                playerCharacter.save_place == HOMETOWN;
+                playerCharacter.save_place = HOMETOWN;
             } else if (choice == 2) {
 
                 cout << "You travel to Bluetown" << endl;
-                playerCharacter.save_place == BLUETOWN;
+                playerCharacter.save_place = BLUETOWN;
             } else if (choice == 3) {
 
                 cout << "You travel to Purpletown" << endl;
-                playerCharacter.save_place == PURPLETOWN;
+                playerCharacter.save_place = PURPLETOWN;
             }
         }
 
@@ -584,7 +588,7 @@ void Explore(Character& playerCharacter) {
 
         if (choice == 1) {
 
-            fightOrFind = rand() % 15;
+            fightOrFind = rand() % 15 + 12;
 
             if (fightOrFind == 15) {
                 cout << "You found an artifact!" << endl;
@@ -618,14 +622,14 @@ void Travel(Character& playerCharacter) {
     if (choice == 1) {
 
             cout << "You travel to Hometown" << endl;
-            playerCharacter.save_place == HOMETOWN;
+            playerCharacter.save_place = HOMETOWN;
         } else if (choice == 2) {
 
             cout << "You travel to Bluetown" << endl;
-            playerCharacter.save_place == BLUETOWN;
+            playerCharacter.save_place = BLUETOWN;
         } else if (choice == 3) {
 
             cout << "You travel to Purpletown" << endl;
-            playerCharacter.save_place == PURPLETOWN;
+            playerCharacter.save_place = PURPLETOWN;
         }
     }

@@ -17,18 +17,28 @@ const string
 
 const int
     // Head gear
-    LIGHTHELM = 2,
-    MEDHELM = 4,
-    HEAVYHELM = 6,
+    LIGHTHELM_DEF = 2,
+    LIGHTHELM_VAL = 10,
+    MEDHELM_DEF = 4,
+    MEDHELM_VAL = 4,
+    HEAVYHELM_DEF = 6,
+    HEAVYHELM_VAL = 6,
     // Body gear
-    GAMBESON = 3,
-    CUIRASS = 5,
-    IRONPLATE = 9,
+    GAMBESON_DEF = 3,
+    GAMBESON_VAL = 3,
+    CUIRASS_DEF = 5,
+    CUIRASS_VAL = 15,
+    IRONPLATE_DEF = 9,
+    IRONPLATE_VAL = 9,
     // Weapons
-    DAGGER = 2,
-    SWORD = 5,
-    LONG_SWORD = 8,
-    EXCALIBUR = 11;
+    DAGGER_DMG = 2,
+    DAGGER_VAL = 5,
+    SWORD_DMG = 5,
+    SWORD_VAL = 5,
+    LONG_SWORD_DMG = 8,
+    LONG_SWORD_VAL = 8,
+    EXCALIBUR_DMG = 11,
+    EXCALIBUR_VAL = 11;
 
 const int
     // Menu options
@@ -154,7 +164,7 @@ Character CreateCharacter() {
     playerCharacter.save_place = "none";
     playerCharacter.lvl = 1;
     playerCharacter.exp = 0;
-    playerCharacter.gold = 0;
+    playerCharacter.gold = 5;
     playerCharacter.head_name = "none";
     playerCharacter.head_value = 0;
     playerCharacter.body_name = "none";
@@ -204,8 +214,6 @@ void Play(Character& playerCharacter) {
     load_player >> playerCharacter.weapon_value;
 
     cout << "\tWelcome back " << playerCharacter.name << "." << endl << endl;
-    cout << "Your level is " << playerCharacter.lvl << endl;
-    cout << "Your weapon level is " << playerCharacter.weapon_value << endl;
 
     if (playerCharacter.save_place == "none") {
         cout << "\tYou begin your adventure in your hometown of ";
@@ -364,7 +372,8 @@ void Shop(Character& playerCharacter) {
 
     if (playerCharacter.save_place == HOMETOWN) {
         cout << "\tA feeble old man greets you." << endl << endl;
-        cout << "  \"What would you like to buy?\"" << endl;
+        cout << "  \"What would you like to buy?\"" << endl << endl;
+        cout << "You have " << playerCharacter.gold << " gold." << endl << endl;
 
         // light helmet, gambeson, dagger
         cout << "1. light helmet - 10 gold" << endl;
@@ -374,31 +383,37 @@ void Shop(Character& playerCharacter) {
         choice = GetChoice(SHOP);
 
         if (choice == 1) {
+            if (playerCharacter.head_value == LIGHTHELM_DEF) {
+            }
             if (playerCharacter.gold < 10) {
                 cout << "  \"You do not have enough gold...\"" << endl;
             } else {
                 cout << "  \"It's not much. But it'll keep yer head on...hehe\"" << endl;
                 playerCharacter.head_name = "light helmet";
-                playerCharacter.head_value = LIGHTHELM;
-                playerCharacter.gold -= LIGHTHELM;
+                playerCharacter.head_value = LIGHTHELM_DEF;
+                playerCharacter.gold -= LIGHTHELM_VAL;
             }
         } else if (choice == 2) {
+            if (playerCharacter.head_value == GAMBESON_DEF) {
+            }
             if (playerCharacter.gold < 15) {
                 cout << "  \"You do not have enough gold...\"" << endl;
             } else {
                 cout << "  \"Ahh. A sturdy piece that one...hehe\"" << endl;
                 playerCharacter.body_name = "gambeson";
-                playerCharacter.body_value = GAMBESON;
-                playerCharacter.gold -= GAMBESON;
+                playerCharacter.body_value = GAMBESON_DEF;
+                playerCharacter.gold -= GAMBESON_VAL;
             }
         } else if (choice == 3) {
+            if (playerCharacter.head_value == DAGGER_DMG) {
+            }
             if (playerCharacter.gold < 5) {
                 cout << "  \"You do not have enough gold...\"" << endl;
             } else {
                 cout << "  \"A mere butter knife...but sharp!...hehe\"" << endl;
                 playerCharacter.weapon_name = "dagger";
-                playerCharacter.weapon_value = DAGGER;
-                playerCharacter.gold -= DAGGER;
+                playerCharacter.weapon_value = DAGGER_DMG;
+                playerCharacter.gold -= DAGGER_VAL;
             }
         } else if (choice == 4) {
             cout << "  \"Take care of yourself now...\"" << endl;
@@ -457,69 +472,72 @@ void Explore(Character& playerCharacter) {
             fightOrFind = rand() % 15 + 1;
 
             if (fightOrFind == 15) {
-                cout << "You found an artifact!" << endl;
+                cout << "You found an artifact!" << endl << endl;
                 playerCharacter.gold += findArtifact;
-                cout << "It's worth" << findArtifact << "gold. Cool." << endl;
+                cout << "It's worth" << findArtifact << "gold. Cool." << endl << endl;
 
             } else if (fightOrFind < 5) {
-                cout << "You encounter a stag." << endl;
+                cout << "You encounter a stag." << endl << endl;
                 enemyHealth = stag;
-                swing = rand() % stag + 1;
-                cout << "You hit for " << swing << " damage." << endl;
+                swing = rand() % stag;
+                cout << "You hit for " << swing << " damage." << endl << endl;
                 while (enemyHealth > 0) {
-                    swing = rand() % stag + 1;
+                    swing = rand() % stag;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "The stag hit you for " << swing << " damage. Your health is " << playerCharacter.hp << endl << endl;
                     if (playerCharacter.hp < 1) {
-                        cout << "You died..." << endl;
+                        cout << "You died..." << endl << endl;
                         exit(1);                                     // CAREFUL
                     }
                     swing = rand() % playerCharacter.weapon_value + 1;
-                    cout << "You hit for " << swing << " damage." << endl;
+                    cout << "You hit for " << swing << " damage." << endl << endl;
                     enemyHealth -= swing;
+                    cout << "The stag has " << enemyHealth << " health." << endl << endl;
                     if (enemyHealth < 1) {
-                        cout << "Victory... You killed the stag." << endl;
+                        cout << "Victory... You killed the stag." << endl << endl;
                     }
                 }
 
             } else if (fightOrFind > 5 && fightOrFind < 10) {
-                cout << "You encounter a scorpion." << endl;
+                cout << "You encounter a scorpion." << endl << endl;
                 enemyHealth = scorpion;
-                swing = rand() % scorpion + 1;
-                cout << "You hit for " << swing << " damage." << endl;
+                swing = rand() % scorpion;
+                cout << "You hit for " << swing << " damage." << endl << endl;
                 while (enemyHealth > 0) {
-                    swing = rand() % scorpion + 1;
+                    swing = rand() % scorpion;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "The scorpion hit you for " << swing << " damage. Your health is " << playerCharacter.hp << endl << endl;
                     if (playerCharacter.hp < 1) {
-                        cout << "You died..." << endl;
+                        cout << "You died..." << endl << endl;
                         exit(1);                                     // CAREFUL
                     }
                     swing = rand() % playerCharacter.weapon_value;
-                    cout << "You hit for " << swing << " damage." << endl;
+                    cout << "You hit for " << swing << " damage." << endl << endl;
                     enemyHealth -= swing;
+                    cout << "The scorpion has " << enemyHealth << " health." << endl << endl;
                     if (enemyHealth < 1) {
-                        cout << "Victory... You killed the scorpion." << endl;
+                        cout << "Victory... You killed the scorpion." << endl << endl;
                     }
                 }
 
             } else if (fightOrFind > 10 && fightOrFind < 15) {
-                cout << "You encounter a werebeast." << endl;
+                cout << "You encounter a werebeast." << endl << endl;
                 enemyHealth = werebeast;
                 while (enemyHealth > 0) {
-                    swing = rand() % werebeast + 1;
+                    swing = rand() % werebeast;
                     playerCharacter.hp -= swing;
-                    cout << "You're hit for " << swing << " damage. Your health is " << playerCharacter.hp << endl;
+                    cout << "The werebeast hit you for " << swing << " damage. Your health is " << playerCharacter.hp << endl << endl;
                     if (playerCharacter.hp < 1) {
-                        cout << "You died..." << endl;
+                        cout << "You died..." << endl << endl;
                         exit(1);                                     // CAREFUL
                     }
-                    cout << "Player weapon value: " << playerCharacter.weapon_value << endl;
+                    cout << "Player weapon value: " << playerCharacter.weapon_value << endl << endl;
                     swing = rand() % playerCharacter.weapon_value;
-                    cout << "You hit for " << swing << " damage." << endl;
+                    cout << "You hit for " << swing << " damage." << endl << endl;
                     enemyHealth -= swing;
+                    cout << "The werebeast has " << enemyHealth << " health." << endl << endl;
                     if (enemyHealth < 1) {
-                        cout << "Victory... You killed the werebeast." << endl;
+                        cout << "Victory... You killed the werebeast." << endl << endl;
                     }
                 }
             }
@@ -569,7 +587,7 @@ void Explore(Character& playerCharacter) {
 
             if (choice == 1) {
 
-                cout << "You travel to Homestown" << endl;
+                cout << "You travel to Hometown" << endl;
                 playerCharacter.save_place = HOMETOWN;
             } else if (choice == 2) {
 

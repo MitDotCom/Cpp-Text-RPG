@@ -1,9 +1,0 @@
-# depslib dependency file v1.0
-1743332083 source:c:\users\booga\repos\c++ text rpg\rpg.cpp
-	<fstream>
-	<iostream>
-	<string>
-	<random>
-	<ctime>
-	<cstdlib>
-
